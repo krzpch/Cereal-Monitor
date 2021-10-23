@@ -155,7 +155,7 @@ class Ui_MainWindow(object):
         #todo: add preset reading from file
 
         self.PresetNameLabel = QtWidgets.QLabel(self.centralwidget)
-        self.PresetNameLabel.setGeometry(810, 470, 191, 16)
+        self.PresetNameLabel.setGeometry(810, 520, 191, 16)
         self.PresetNameLabel.setObjectName("PresetNameLabel")
         self.PresetNameLabel.setText("Name")
 
@@ -177,6 +177,21 @@ class Ui_MainWindow(object):
         self.PresetDeleteButton.setGeometry(810, 650, 93, 28)
         self.PresetDeleteButton.setObjectName("PresetDeleteButton")
         self.PresetDeleteButton.setText("Delete")
+
+        #### String Sending ####
+        self.SendStringLabel = QtWidgets.QLabel(self.centralwidget)
+        self.SendStringLabel.setGeometry(20, 740, 651, 16)
+        self.SendStringLabel.setObjectName("SendStringLabel")
+        self.SendStringLabel.setText("Send String")
+
+        self.SendStringLine = QtWidgets.QLineEdit(self.centralwidget)
+        self.SendStringLine.setGeometry(20, 760, 651, 31)
+        self.SendStringLine.setObjectName("SendStringLine")
+
+        self.SendStringButton = QtWidgets.QPushButton(self.centralwidget, clicked = lambda: self.presetsave_on_click())
+        self.SendStringButton.setGeometry(678, 760, 93, 31)
+        self.SendStringButton.setObjectName("SendStringButton")
+        self.SendStringButton.setText("Send")
 
         MainWindow.setMenuBar(self.menubar)
 
