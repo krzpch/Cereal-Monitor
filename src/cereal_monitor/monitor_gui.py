@@ -10,24 +10,59 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+import sys
+import glob
+import serial
+
+import monitor_serial as ser
+
+# avaliable port detection
+def list_ports():
+    if sys.platform.startswith('win'):
+        ports = ['COM%s' % (i + 1) for i in range(256)]
+    elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
+        ports = glob.glob('/dev/tty[A-Za-z]*')
+    elif sys.platform.startswith('darwin'):
+        ports = glob.glob('/dev/tty.*')
+    else:
+        raise EnvironmentError('Unsupported platform')
+    result = []
+    for port in ports:
+        try:
+            s = serial.Serial(port)
+            s.close()
+            result.append(port)
+        except (OSError, serial.SerialException):
+            pass
+    return result
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1056, 622)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+
         self.BaudrateInput = QtWidgets.QLineEdit(self.centralwidget)
         self.BaudrateInput.setGeometry(QtCore.QRect(810, 80, 191, 22))
         self.BaudrateInput.setObjectName("BaudrateInput")
+        self.BaudrateInput.setText("9600")
+
         self.PortBox = QtWidgets.QComboBox(self.centralwidget)
         self.PortBox.setGeometry(QtCore.QRect(810, 30, 191, 22))
         self.PortBox.setObjectName("PortBox")
+        # add avaliable ports to list
+        for port in list_ports():
+            self.PortBox.addItem(port, port)
+
         self.PortLabel = QtWidgets.QLabel(self.centralwidget)
         self.PortLabel.setGeometry(QtCore.QRect(810, 10, 191, 16))
         self.PortLabel.setObjectName("PortLabel")
+
         self.BaudrateLabel = QtWidgets.QLabel(self.centralwidget)
         self.BaudrateLabel.setGeometry(QtCore.QRect(810, 60, 111, 16))
         self.BaudrateLabel.setObjectName("BaudrateLabel")
+
         self.ParityBox = QtWidgets.QComboBox(self.centralwidget)
         self.ParityBox.setGeometry(QtCore.QRect(810, 130, 191, 22))
         self.ParityBox.setObjectName("ParityBox")
@@ -36,12 +71,14 @@ class Ui_MainWindow(object):
         self.ParityBox.addItem("")
         self.ParityBox.addItem("")
         self.ParityBox.addItem("")
+
         self.StopbitBox = QtWidgets.QComboBox(self.centralwidget)
         self.StopbitBox.setGeometry(QtCore.QRect(810, 180, 191, 22))
         self.StopbitBox.setObjectName("StopbitBox")
         self.StopbitBox.addItem("")
         self.StopbitBox.addItem("")
         self.StopbitBox.addItem("")
+
         self.BytesizeBox = QtWidgets.QComboBox(self.centralwidget)
         self.BytesizeBox.setGeometry(QtCore.QRect(810, 230, 191, 22))
         self.BytesizeBox.setObjectName("BytesizeBox")
@@ -49,42 +86,54 @@ class Ui_MainWindow(object):
         self.BytesizeBox.addItem("")
         self.BytesizeBox.addItem("")
         self.BytesizeBox.addItem("")
+
         self.ParityLabel = QtWidgets.QLabel(self.centralwidget)
         self.ParityLabel.setGeometry(QtCore.QRect(810, 110, 55, 16))
         self.ParityLabel.setObjectName("ParityLabel")
+
         self.sfcBox = QtWidgets.QCheckBox(self.centralwidget)
         self.sfcBox.setGeometry(QtCore.QRect(810, 260, 161, 21))
         self.sfcBox.setObjectName("sfcBox")
+
         self.rtsctsBox = QtWidgets.QCheckBox(self.centralwidget)
         self.rtsctsBox.setGeometry(QtCore.QRect(810, 290, 81, 20))
         self.rtsctsBox.setObjectName("rtsctsBox")
+
         self.dsrdtrBox = QtWidgets.QCheckBox(self.centralwidget)
         self.dsrdtrBox.setGeometry(QtCore.QRect(810, 320, 81, 20))
         self.dsrdtrBox.setObjectName("dsrdtrBox")
+
         self.StopbitsLabel = QtWidgets.QLabel(self.centralwidget)
         self.StopbitsLabel.setGeometry(QtCore.QRect(810, 160, 55, 16))
         self.StopbitsLabel.setObjectName("StopbitsLabel")
+
         self.BytesizeLabel = QtWidgets.QLabel(self.centralwidget)
         self.BytesizeLabel.setGeometry(QtCore.QRect(810, 210, 111, 16))
         self.BytesizeLabel.setObjectName("BytesizeLabel")
+
         self.line = QtWidgets.QFrame(self.centralwidget)
         self.line.setGeometry(QtCore.QRect(780, 10, 20, 551))
         self.line.setFrameShape(QtWidgets.QFrame.VLine)
         self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line.setObjectName("line")
+
         self.TextWindow = QtWidgets.QTextEdit(self.centralwidget)
         self.TextWindow.setGeometry(QtCore.QRect(20, 10, 751, 551))
         self.TextWindow.setObjectName("TextWindow")
-        self.OpenButton = QtWidgets.QPushButton(self.centralwidget)
+
+        self.OpenButton = QtWidgets.QPushButton(self.centralwidget, clicked = lambda: self.open_on_click())
         self.OpenButton.setGeometry(QtCore.QRect(810, 350, 191, 28))
         self.OpenButton.setObjectName("OpenButton")
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
+
         MainWindow.setStatusBar(self.statusbar)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1056, 26))
         self.menubar.setObjectName("menubar")
+
         MainWindow.setMenuBar(self.menubar)
 
         self.retranslateUi(MainWindow)
@@ -114,3 +163,10 @@ class Ui_MainWindow(object):
         self.StopbitsLabel.setText(_translate("MainWindow", "StopBits"))
         self.BytesizeLabel.setText(_translate("MainWindow", "Byte Size"))
         self.OpenButton.setText(_translate("MainWindow", "Open/Change"))
+
+    # open the serial port for reading and writing
+    def open_on_click(self):
+        temp_list = [self.PortBox.currentData(),self.BaudrateInput.text(),self.BytesizeBox.currentIndex(),
+            self.ParityBox.currentIndex(), self.StopbitBox.currentIndex(), self.sfcBox.isChecked(),
+            self.rtsctsBox.isChecked(), self.dsrdtrBox.isChecked()]
+        print(temp_list)
