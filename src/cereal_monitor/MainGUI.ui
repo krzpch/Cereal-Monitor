@@ -228,7 +228,7 @@
      <string>Byte Size</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="TextWindow">
+   <widget class="QTextEdit" name="MainMonitorWindow">
     <property name="geometry">
      <rect>
       <x>20</x>
