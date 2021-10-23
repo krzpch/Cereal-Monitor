@@ -28,7 +28,7 @@ class Serial_funcs:
         if self.port == None or self.baudrate == 0:
             print("ERROR - Wrong port or baudrate")
         else:
-            if self.serial_port.is_open() == True:
+            if self.serial_port.is_open:
                 self.serial_port.close()
                 self.update_settings()
                 self.serial_port.open()
@@ -48,13 +48,20 @@ class Serial_funcs:
         self.dsrdtr = list[7]
 
     def update_settings(self):
-        assert self.serial_port.is_open() == False, "ERROR - Port is opened, cannot change settings"
-        self.serial_port.port(self.port)
-        self.serial_port.baudrate(self.baudrate)
-        self.serial_port.bytesize(self.bytesize)
-        self.serial_port.parity(self.parity)
-        self.serial_port.stopbits(self.stopbit)
-        self.serial_port.xonxoff(self.sfc)
-        self.serial_port.rtscts(self.rtscts)
-        self.serial_port.dsrdtr(self.dsrdtr) 
+        assert self.serial_port.is_open == False, "ERROR - Port is opened, cannot change settings"
+        self.serial_port.port = self.port
+        self.serial_port.baudrate = self.baudrate
+        self.serial_port.bytesize = self.bytesize
+        self.serial_port.parity = self.parity
+        self.serial_port.stopbits = self.stopbit
+        self.serial_port.xonxoff = self.sfc
+        self.serial_port.rtscts = self.rtscts
+        self.serial_port.dsrdtr = self.dsrdtr 
+
+    def get_byte(self):
+        byte = self.serial_port.read()
+        return byte
+
+    def send_byte(self, byte):
+        self.serial_port.write(byte)
     

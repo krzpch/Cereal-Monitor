@@ -13,6 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 import glob
 import serial
+import threading
 
 import monitor_serial as ser
 
@@ -21,7 +22,7 @@ def list_ports():
     if sys.platform.startswith('win'):
         ports = ['COM%s' % (i + 1) for i in range(256)]
     elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
-        ports = glob.glob('/dev/tty[A-Za-z]*')
+        ports = glob.glob('/dev/tty[0-90-9]*')
     elif sys.platform.startswith('darwin'):
         ports = glob.glob('/dev/tty.*')
     else:
@@ -37,6 +38,8 @@ def list_ports():
     return result
 
 class Ui_MainWindow(object):
+    MySerial = ser.Serial_funcs()
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1061, 860)
@@ -181,7 +184,7 @@ class Ui_MainWindow(object):
         MainWindow.setMenuBar(self.menubar)
 
         self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow) 
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -189,10 +192,19 @@ class Ui_MainWindow(object):
 
     #### open and clsoe the serial port for reading and writing ####
     def open_on_click(self):
-        temp_list = [self.PortBox.currentData(),self.BaudrateInput.text(),self.BytesizeBox.currentIndex(),
+        settings_list = [self.PortBox.currentData(),self.BaudrateInput.text(),self.BytesizeBox.currentIndex(),
             self.ParityBox.currentIndex(), self.StopbitBox.currentIndex(), self.sfcBox.isChecked(),
             self.rtsctsBox.isChecked(), self.dsrdtrBox.isChecked()]
-        print(temp_list)
+        
+        self.MySerial.set_settings(settings_list)
+        self.MySerial.serial_open()
+
+        x = threading.Thread(target=self.display_data)
+        x.start()
+
+    def display_data(self):
+        data = self.MySerial.get_byte()
+        self.MainMonitorWindow.append(data)
 
     def close_on_click(self):
         raise NotImplementedError
