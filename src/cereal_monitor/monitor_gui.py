@@ -39,7 +39,7 @@ def list_ports():
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1056, 622)
+        MainWindow.resize(1061, 860)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
@@ -58,76 +58,81 @@ class Ui_MainWindow(object):
         self.PortLabel = QtWidgets.QLabel(self.centralwidget)
         self.PortLabel.setGeometry(QtCore.QRect(810, 10, 191, 16))
         self.PortLabel.setObjectName("PortLabel")
+        self.PortLabel.setText("Port")
 
         self.BaudrateLabel = QtWidgets.QLabel(self.centralwidget)
         self.BaudrateLabel.setGeometry(QtCore.QRect(810, 60, 111, 16))
         self.BaudrateLabel.setObjectName("BaudrateLabel")
+        self.BaudrateLabel.setText("Baudrate")
 
         self.ParityBox = QtWidgets.QComboBox(self.centralwidget)
         self.ParityBox.setGeometry(QtCore.QRect(810, 130, 191, 22))
         self.ParityBox.setObjectName("ParityBox")
-        self.ParityBox.addItem("")
-        self.ParityBox.addItem("")
-        self.ParityBox.addItem("")
-        self.ParityBox.addItem("")
-        self.ParityBox.addItem("")
+        self.ParityBox.addItem("NONE", 0)
+        self.ParityBox.addItem("EVEN PARITY", 1)
+        self.ParityBox.addItem("ODD PARITY", 2)
+        self.ParityBox.addItem("MARK PARITY", 3)
+        self.ParityBox.addItem("SPACE PARITY", 4)
 
         self.StopbitBox = QtWidgets.QComboBox(self.centralwidget)
         self.StopbitBox.setGeometry(QtCore.QRect(810, 180, 191, 22))
         self.StopbitBox.setObjectName("StopbitBox")
-        self.StopbitBox.addItem("")
-        self.StopbitBox.addItem("")
-        self.StopbitBox.addItem("")
+        self.StopbitBox.addItem("ONE", 0)
+        self.StopbitBox.addItem("ONE POINT FIVE", 1)
+        self.StopbitBox.addItem("TWO", 2)
 
         self.BytesizeBox = QtWidgets.QComboBox(self.centralwidget)
         self.BytesizeBox.setGeometry(QtCore.QRect(810, 230, 191, 22))
         self.BytesizeBox.setObjectName("BytesizeBox")
-        self.BytesizeBox.addItem("")
-        self.BytesizeBox.addItem("")
-        self.BytesizeBox.addItem("")
-        self.BytesizeBox.addItem("")
+        self.BytesizeBox.addItem("8", 0)
+        self.BytesizeBox.addItem("7", 3)
+        self.BytesizeBox.addItem("6", 2)
+        self.BytesizeBox.addItem("5", 1)
 
         self.ParityLabel = QtWidgets.QLabel(self.centralwidget)
         self.ParityLabel.setGeometry(QtCore.QRect(810, 110, 55, 16))
         self.ParityLabel.setObjectName("ParityLabel")
+        self.ParityLabel.setText("Parity")
 
         self.sfcBox = QtWidgets.QCheckBox(self.centralwidget)
         self.sfcBox.setGeometry(QtCore.QRect(810, 260, 161, 21))
         self.sfcBox.setObjectName("sfcBox")
+        self.sfcBox.setText("Software flow controll")
 
         self.rtsctsBox = QtWidgets.QCheckBox(self.centralwidget)
         self.rtsctsBox.setGeometry(QtCore.QRect(810, 290, 81, 20))
         self.rtsctsBox.setObjectName("rtsctsBox")
+        self.rtsctsBox.setText("RTC/CTS")
 
         self.dsrdtrBox = QtWidgets.QCheckBox(self.centralwidget)
         self.dsrdtrBox.setGeometry(QtCore.QRect(810, 320, 81, 20))
         self.dsrdtrBox.setObjectName("dsrdtrBox")
+        self.dsrdtrBox.setText("DSR/DTR")
 
         self.StopbitsLabel = QtWidgets.QLabel(self.centralwidget)
         self.StopbitsLabel.setGeometry(QtCore.QRect(810, 160, 55, 16))
         self.StopbitsLabel.setObjectName("StopbitsLabel")
+        self.StopbitsLabel.setText("StopBits")
 
         self.BytesizeLabel = QtWidgets.QLabel(self.centralwidget)
         self.BytesizeLabel.setGeometry(QtCore.QRect(810, 210, 111, 16))
         self.BytesizeLabel.setObjectName("BytesizeLabel")
+        self.BytesizeLabel.setText("Byte Size")
 
-        self.line = QtWidgets.QFrame(self.centralwidget)
-        self.line.setGeometry(QtCore.QRect(780, 10, 20, 551))
-        self.line.setFrameShape(QtWidgets.QFrame.VLine)
-        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
-        self.line.setObjectName("line")
+        self.MainMonitorWindow = QtWidgets.QTextEdit(self.centralwidget)
+        self.MainMonitorWindow.setGeometry(QtCore.QRect(20, 10, 751, 720))
+        self.MainMonitorWindow.setObjectName("MainMonitorWindow")
 
-        self.TextWindow = QtWidgets.QTextEdit(self.centralwidget)
-        self.TextWindow.setGeometry(QtCore.QRect(20, 10, 751, 551))
-        self.TextWindow.setObjectName("TextWindow")
-
+        #### open and close buttons ####
         self.OpenButton = QtWidgets.QPushButton(self.centralwidget, clicked = lambda: self.open_on_click())
         self.OpenButton.setGeometry(QtCore.QRect(810, 350, 191, 28))
         self.OpenButton.setObjectName("OpenButton")
+        self.OpenButton.setText("Open/Change")
 
         self.CloseButton = QtWidgets.QPushButton(self.centralwidget, clicked = lambda: self.close_on_click())
         self.CloseButton.setGeometry(QtCore.QRect(810, 390, 191, 28))
         self.CloseButton.setObjectName("CloseButton")
+        self.CloseButton.setText("Close")
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -138,6 +143,41 @@ class Ui_MainWindow(object):
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1056, 26))
         self.menubar.setObjectName("menubar")
 
+        #### Preset saving and loading ####
+        self.PresetLabel = QtWidgets.QLabel(self.centralwidget)
+        self.PresetLabel.setGeometry(810, 470, 191, 16)
+        self.PresetLabel.setObjectName("PresetLabel")
+        self.PresetLabel.setText("Saved Presets")
+
+        self.PresetBox = QtWidgets.QComboBox(self.centralwidget)
+        self.PresetBox.setGeometry(810, 490, 191, 22)
+        self.PresetBox.setObjectName("PresetBox")
+        #todo: add preset reading from file
+
+        self.PresetNameLabel = QtWidgets.QLabel(self.centralwidget)
+        self.PresetNameLabel.setGeometry(810, 470, 191, 16)
+        self.PresetNameLabel.setObjectName("PresetNameLabel")
+        self.PresetNameLabel.setText("Name")
+
+        self.PresetNameLine = QtWidgets.QLineEdit(self.centralwidget)
+        self.PresetNameLine.setGeometry(810, 540, 191, 22)
+        self.PresetNameLine.setObjectName("PresetNameLine")
+
+        self.PresetLoadButton = QtWidgets.QPushButton(self.centralwidget, clicked = lambda: self.presetload_on_click())
+        self.PresetLoadButton.setGeometry(810, 570, 93, 28)
+        self.PresetLoadButton.setObjectName("PresetLoadButton")
+        self.PresetLoadButton.setText("Load")
+
+        self.PresetSaveButton = QtWidgets.QPushButton(self.centralwidget, clicked = lambda: self.presetsave_on_click())
+        self.PresetSaveButton.setGeometry(810, 610, 93, 28)
+        self.PresetSaveButton.setObjectName("PresetSaveButton")
+        self.PresetSaveButton.setText("Save")
+
+        self.PresetDeleteButton = QtWidgets.QPushButton(self.centralwidget, clicked = lambda: self.presetdelete_on_click())
+        self.PresetDeleteButton.setGeometry(810, 650, 93, 28)
+        self.PresetDeleteButton.setObjectName("PresetDeleteButton")
+        self.PresetDeleteButton.setText("Delete")
+
         MainWindow.setMenuBar(self.menubar)
 
         self.retranslateUi(MainWindow)
@@ -146,30 +186,8 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.PortLabel.setText(_translate("MainWindow", "Port"))
-        self.BaudrateLabel.setText(_translate("MainWindow", "Baudrate"))
-        self.ParityBox.setItemText(0, _translate("MainWindow", "NONE"))
-        self.ParityBox.setItemText(1, _translate("MainWindow", "EVEN PARITY"))
-        self.ParityBox.setItemText(2, _translate("MainWindow", "ODD PARITY"))
-        self.ParityBox.setItemText(3, _translate("MainWindow", "MARK PARITY"))
-        self.ParityBox.setItemText(4, _translate("MainWindow", "SPACE PARITY"))
-        self.StopbitBox.setItemText(0, _translate("MainWindow", "ONE"))
-        self.StopbitBox.setItemText(1, _translate("MainWindow", "ONE POINT FIVE"))
-        self.StopbitBox.setItemText(2, _translate("MainWindow", "TWO"))
-        self.BytesizeBox.setItemText(0, _translate("MainWindow", "8"))
-        self.BytesizeBox.setItemText(1, _translate("MainWindow", "7"))
-        self.BytesizeBox.setItemText(2, _translate("MainWindow", "6"))
-        self.BytesizeBox.setItemText(3, _translate("MainWindow", "5"))
-        self.ParityLabel.setText(_translate("MainWindow", "Parity"))
-        self.sfcBox.setText(_translate("MainWindow", "Software flow controll"))
-        self.rtsctsBox.setText(_translate("MainWindow", "RTC/CTS"))
-        self.dsrdtrBox.setText(_translate("MainWindow", "DSR/DTR"))
-        self.StopbitsLabel.setText(_translate("MainWindow", "StopBits"))
-        self.BytesizeLabel.setText(_translate("MainWindow", "Byte Size"))
-        self.OpenButton.setText(_translate("MainWindow", "Open/Change"))
-        self.CloseButton.setText(_translate("MainWindow", "Close"))
 
-    # open the serial port for reading and writing
+    #### open and clsoe the serial port for reading and writing ####
     def open_on_click(self):
         temp_list = [self.PortBox.currentData(),self.BaudrateInput.text(),self.BytesizeBox.currentIndex(),
             self.ParityBox.currentIndex(), self.StopbitBox.currentIndex(), self.sfcBox.isChecked(),
@@ -177,4 +195,15 @@ class Ui_MainWindow(object):
         print(temp_list)
 
     def close_on_click(self):
+        raise NotImplementedError
+
+
+    #### preset load, save and delete button ####
+    def presetload_on_click(self):
+        raise NotImplementedError
+
+    def presetsave_on_click(self):
+        raise NotImplementedError
+
+    def presetdelete_on_click(self):
         raise NotImplementedError
