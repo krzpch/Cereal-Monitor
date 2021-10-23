@@ -125,6 +125,10 @@ class Ui_MainWindow(object):
         self.OpenButton.setGeometry(QtCore.QRect(810, 350, 191, 28))
         self.OpenButton.setObjectName("OpenButton")
 
+        self.CloseButton = QtWidgets.QPushButton(self.centralwidget, clicked = lambda: self.close_on_click())
+        self.CloseButton.setGeometry(QtCore.QRect(810, 390, 191, 28))
+        self.CloseButton.setObjectName("CloseButton")
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -163,6 +167,7 @@ class Ui_MainWindow(object):
         self.StopbitsLabel.setText(_translate("MainWindow", "StopBits"))
         self.BytesizeLabel.setText(_translate("MainWindow", "Byte Size"))
         self.OpenButton.setText(_translate("MainWindow", "Open/Change"))
+        self.CloseButton.setText(_translate("MainWindow", "Close"))
 
     # open the serial port for reading and writing
     def open_on_click(self):
@@ -170,3 +175,6 @@ class Ui_MainWindow(object):
             self.ParityBox.currentIndex(), self.StopbitBox.currentIndex(), self.sfcBox.isChecked(),
             self.rtsctsBox.isChecked(), self.dsrdtrBox.isChecked()]
         print(temp_list)
+
+    def close_on_click(self):
+        raise NotImplementedError
