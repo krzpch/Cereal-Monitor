@@ -9,13 +9,13 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import QThread as thr
 
 import sys
 import glob
 import serial
-import threading
 
-import monitor_serial as ser
+import monitor_serial
 
 # avaliable port detection
 def list_ports():
@@ -38,8 +38,6 @@ def list_ports():
     return result
 
 class Ui_MainWindow(object):
-    MySerial = ser.Serial_funcs()
-
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1061, 860)
@@ -192,23 +190,15 @@ class Ui_MainWindow(object):
 
     #### open and clsoe the serial port for reading and writing ####
     def open_on_click(self):
-        settings_list = [self.PortBox.currentData(),self.BaudrateInput.text(),self.BytesizeBox.currentIndex(),
-            self.ParityBox.currentIndex(), self.StopbitBox.currentIndex(), self.sfcBox.isChecked(),
-            self.rtsctsBox.isChecked(), self.dsrdtrBox.isChecked()]
-        
-        self.MySerial.set_settings(settings_list)
-        self.MySerial.serial_open()
-
-        x = threading.Thread(target=self.display_data)
-        x.start()
-
-    def display_data(self):
-        data = self.MySerial.get_byte()
-        self.MainMonitorWindow.append(data)
+        self.UARTThread = monitor_serial.UARTPort(self.PortBox.currentData(),self.BaudrateInput.text(),
+            self.ParityBox.currentIndex(),self.StopbitBox.currentIndex(), self.BytesizeBox.currentIndex(), 
+            self.sfcBox.isChecked(), self.rtsctsBox.isChecked(), self.dsrdtrBox.isChecked())
 
     def close_on_click(self):
         raise NotImplementedError
 
+    def display_data(self):
+        raise NotImplementedError
 
     #### preset load, save and delete button ####
     def presetload_on_click(self):
