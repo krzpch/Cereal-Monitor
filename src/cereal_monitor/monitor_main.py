@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets
+from PyQt5 import QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow
 import sys
 
@@ -10,6 +10,7 @@ def main_window():
     ui = gui.Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.setWindowTitle("Cereal Monitor")
+    MainWindow.setWindowIcon(QtGui.QIcon('icon.png'))
 
     MainWindow.show()
     sys.exit(app.exec_())
