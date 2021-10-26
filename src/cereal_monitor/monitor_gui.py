@@ -189,7 +189,7 @@ class Ui_MainWindow(object):
         self.SendStringLine.setGeometry(20, 760, 651, 31)
         self.SendStringLine.setObjectName("SendStringLine")
 
-        self.SendStringButton = QtWidgets.QPushButton(self.centralwidget, clicked = lambda: self.presetsave_on_click())
+        self.SendStringButton = QtWidgets.QPushButton(self.centralwidget, clicked = lambda: self.send_on_click())
         self.SendStringButton.setGeometry(678, 760, 93, 31)
         self.SendStringButton.setObjectName("SendStringButton")
         self.SendStringButton.setText("Send")
@@ -219,6 +219,10 @@ class Ui_MainWindow(object):
         self.MainMonitorWindow.moveCursor(QtGui.QTextCursor.MoveOperation.End)
         self.MainMonitorWindow.insertPlainText(data)
         self.MainMonitorWindow.moveCursor(QtGui.QTextCursor.MoveOperation.End)
+
+    #### String Sending ####
+    def send_on_click(self):
+        self.UARTThread.send(bytes(self.SendStringLine.text(),'ascii'))
 
     #### preset load, save and delete button ####
     def presetload_on_click(self):
