@@ -12,7 +12,6 @@ class UARTPort(QThread):
     # signals
     recv = QtCore.pyqtSignal(object)
 
-
     def __init__(self, port, baudrate, parity, stopbit, bytesize, sfc, rtscts, dsrdtr):
         QThread.__init__(self)
         self.timeout = None
@@ -29,13 +28,18 @@ class UARTPort(QThread):
 
     def run(self):
         while self.port_opened:
-            temp_str = str(self.serial_port.readline(),encoding="ascii")
+            temp_str = str(self.serial_port.read_all(),encoding='ascii')
             self.recv.emit(temp_str)
-#            self.ret = trmp_ret
+            self.str = temp_str
+
+    def recv_string(self):
+        return self.str
 
     def send(self, data):
-        if self.port_opened == True:
-            self.serial_port.write(data)
+        if self.port_opened:
+            print("Sending:",data)
+            self.serial_port.write(str.encode(data))
+            self.serial_port.flush()
 
     def close_port(self):
         if self.port_opened == True:
