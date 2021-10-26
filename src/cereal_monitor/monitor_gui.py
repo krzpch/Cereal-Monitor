@@ -18,26 +18,6 @@ import serial
 import monitor_serial
 import serial_monitor_presets
 
-# avaliable port detection
-def list_ports():
-    if sys.platform.startswith('win'):
-        ports = ['COM%s' % (i + 1) for i in range(256)]
-    elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
-        ports = glob.glob('/dev/ttyS[0-90-9]*')
-    elif sys.platform.startswith('darwin'):
-        ports = glob.glob('/dev/tty.*')
-    else:
-        raise EnvironmentError('Unsupported platform')
-    result = []
-    for port in ports:
-        try:
-            s = serial.Serial(port)
-            s.close()
-            result.append(port)
-        except (OSError, serial.SerialException):
-            pass
-    return result
-
 class Ui_MainWindow(object):
     monitor_presets = serial_monitor_presets.MonitorPresets()
 
@@ -56,7 +36,7 @@ class Ui_MainWindow(object):
         self.PortBox.setGeometry(QtCore.QRect(810, 30, 191, 22))
         self.PortBox.setObjectName("PortBox")
         # add avaliable ports to list
-        for port in list_ports():
+        for port in self.list_ports():
             self.PortBox.addItem(port, port)
 
         self.PortLabel = QtWidgets.QLabel(self.centralwidget)
@@ -257,8 +237,31 @@ class Ui_MainWindow(object):
         self.list_presets()
 
     def presetdelete_on_click(self):
-        raise NotImplementedError
+        self.monitor_presets.delete_preset(self.PresetBox.currentText())
+        
+        self.PresetBox.clear()
+        self.list_presets()
 
     def list_presets(self):
         for preset in self.monitor_presets.data['presets']:
             self.PresetBox.addItem(preset['name'])
+
+    # avaliable port detection
+    def list_ports(self):
+        if sys.platform.startswith('win'):
+            ports = ['COM%s' % (i + 1) for i in range(256)]
+        elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
+            ports = glob.glob('/dev/ttyS[0-90-9]*')
+        elif sys.platform.startswith('darwin'):
+            ports = glob.glob('/dev/tty.*')
+        else:
+            raise EnvironmentError('Unsupported platform')
+        result = []
+        for port in ports:
+            try:
+                s = serial.Serial(port)
+                s.close()
+                result.append(port)
+            except (OSError, serial.SerialException):
+                pass
+        return result

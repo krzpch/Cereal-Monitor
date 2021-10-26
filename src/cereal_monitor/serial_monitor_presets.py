@@ -1,5 +1,7 @@
 import json
 
+from PyQt5.sip import delete
+
 class MonitorPresets():
     data = {}
 
@@ -34,4 +36,10 @@ class MonitorPresets():
                 return preset['port'], preset['baudrate'], preset['parity'], preset['stopbits'], preset['bytesize'], preset['sfc'], preset['rtscts'], preset['dsrdtr']
         
     def delete_preset(self, name):
-        raise NotImplementedError
+        i = 0
+        for preset in self.data['presets']:
+            if name == preset['name']:
+                self.data['presets'].pop(i)
+                with open('saved_presets.json', 'w') as outfile:
+                    json.dump(self.data, outfile, indent=4)
+            i = i + 1
