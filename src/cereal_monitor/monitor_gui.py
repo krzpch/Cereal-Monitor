@@ -222,7 +222,7 @@ class Ui_MainWindow(object):
 
     #### String Sending ####
     def send_on_click(self):
-        self.UARTThread.send(bytes(self.SendStringLine.text(),'ascii'))
+        self.UARTThread.send(self.SendStringLine.text())
 
     #### preset load, save and delete button ####
     def presetload_on_click(self):
