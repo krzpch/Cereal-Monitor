@@ -16,6 +16,7 @@ import glob
 import serial
 
 import monitor_serial
+import serial_monitor_presets
 
 # avaliable port detection
 def list_ports():
@@ -38,6 +39,8 @@ def list_ports():
     return result
 
 class Ui_MainWindow(object):
+    monitor_presets = serial_monitor_presets.MonitorPresets()
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1061, 860)
@@ -153,7 +156,8 @@ class Ui_MainWindow(object):
         self.PresetBox = QtWidgets.QComboBox(self.centralwidget)
         self.PresetBox.setGeometry(810, 490, 191, 22)
         self.PresetBox.setObjectName("PresetBox")
-        #todo: add preset reading from file
+        
+        self.list_presets()
 
         self.PresetNameLabel = QtWidgets.QLabel(self.centralwidget)
         self.PresetNameLabel.setGeometry(810, 520, 191, 16)
@@ -222,10 +226,39 @@ class Ui_MainWindow(object):
 
     #### preset load, save and delete button ####
     def presetload_on_click(self):
-        raise NotImplementedError
+        port_available = False
+
+        port, baudrate, parity, stopbits, bytesize, sfc, rtscts, dsrdtr = self.monitor_presets.load_preset(self.PresetBox.currentText())
+
+        for i in range(self.PortBox.count()):
+            if self.PortBox.itemText(i) == port:
+                port_available = True
+        
+        if port_available == False:
+            ## TODO: impement error message ;-)
+            print('nie ma takiego portu, szefunciu')
+        else:
+            self.PortBox.setCurrentText(port)
+            self.BaudrateInput.setText(baudrate)
+            self.ParityBox.setCurrentIndex(parity)
+            self.StopbitBox.setCurrentIndex(stopbits)
+            self.BytesizeBox.setCurrentIndex(bytesize)
+            self.sfcBox.setChecked(sfc)
+            self.rtsctsBox.setChecked(rtscts)
+            self.dsrdtrBox.setChecked(dsrdtr)
+
 
     def presetsave_on_click(self):
-        raise NotImplementedError
+        self.monitor_presets.save_preset(self.PresetNameLine.text(), self.PortBox.currentData(), self.BaudrateInput.text(),
+            self.ParityBox.currentIndex(), self.StopbitBox.currentIndex(), self.BytesizeBox.currentIndex(), 
+            self.sfcBox.isChecked(), self.rtsctsBox.isChecked(), self.dsrdtrBox.isChecked())
+        
+        self.PresetBox.clear()
+        self.list_presets()
 
     def presetdelete_on_click(self):
         raise NotImplementedError
+
+    def list_presets(self):
+        for preset in self.monitor_presets.data['presets']:
+            self.PresetBox.addItem(preset['name'])
