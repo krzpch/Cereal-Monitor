@@ -188,6 +188,7 @@ class Ui_MainWindow(object):
         self.SendStringLine = QtWidgets.QLineEdit(self.centralwidget)
         self.SendStringLine.setGeometry(20, 760, 651, 31)
         self.SendStringLine.setObjectName("SendStringLine")
+        self.SendStringLine.returnPressed.connect(self.send_on_click)
 
         self.SendStringButton = QtWidgets.QPushButton(self.centralwidget, clicked = lambda: self.send_on_click())
         self.SendStringButton.setGeometry(678, 760, 93, 31)
@@ -197,6 +198,7 @@ class Ui_MainWindow(object):
         MainWindow.setMenuBar(self.menubar)
 
         self.retranslateUi(MainWindow)
+        self.set_port_status()
         QtCore.QMetaObject.connectSlotsByName(MainWindow) 
 
     def retranslateUi(self, MainWindow):
@@ -204,6 +206,9 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
 
     #### open and clsoe the serial port for reading and writing ####
+    def set_port_status(self):
+        self.port_opened = False
+
     def open_on_click(self):
         self.UARTThread = monitor_serial.UARTPort(self.PortBox.currentData(),self.BaudrateInput.text(),
             self.ParityBox.currentIndex(),self.StopbitBox.currentIndex(), self.BytesizeBox.currentIndex(), 
@@ -211,9 +216,11 @@ class Ui_MainWindow(object):
         self.UARTThread.recv.connect(self.display_data)
         self.UARTThread.setTerminationEnabled(True)
         self.UARTThread.start()
+        self.port_opened = True
 
     def close_on_click(self):
         self.UARTThread.close_port()
+        self.port_opened = False
 
     def display_data(self, data):
         self.MainMonitorWindow.moveCursor(QtGui.QTextCursor.MoveOperation.End)
@@ -222,7 +229,8 @@ class Ui_MainWindow(object):
 
     #### String Sending ####
     def send_on_click(self):
-        self.UARTThread.send(self.SendStringLine.text())
+        if self.port_opened:
+            self.UARTThread.send(self.SendStringLine.text())
 
     #### preset load, save and delete button ####
     def presetload_on_click(self):
