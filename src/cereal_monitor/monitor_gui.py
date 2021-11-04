@@ -224,7 +224,12 @@ class Ui_MainWindow(object):
     #### String Sending ####
     def send_on_click(self):
         if self.port_opened:
-            self.UARTThread.send(self.SendStringLine.text())
+            send_text = self.SendStringLine.text()
+            if self.IncludeNBox.isChecked() == True:
+                send_text = send_text + '\n'
+            if self.IncludeRBox.isChecked() == True:
+                send_text = send_text + '\r'
+            self.UARTThread.send(send_text)
 
     #### preset load, save and delete button ####
     def presetload_on_click(self):
