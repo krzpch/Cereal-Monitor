@@ -20,6 +20,7 @@ import serial_monitor_presets
 
 class Ui_MainWindow(object):
     monitor_presets = serial_monitor_presets.MonitorPresets()
+    display_flag = False
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -31,6 +32,7 @@ class Ui_MainWindow(object):
         self.MainMonitorWindow = QtWidgets.QTextEdit(self.centralwidget)
         self.MainMonitorWindow.setGeometry(QtCore.QRect(20, 10, 751, 720))
         self.MainMonitorWindow.setObjectName("MainMonitorWindow")
+        self.MainMonitorWindow.textChanged.connect(self.send_from_window)
 
         self.ClearMainMonitorWindowButton = QtWidgets.QPushButton(self.centralwidget, clicked = lambda: self.clear_main_window_on_click())
         self.ClearMainMonitorWindowButton.setGeometry(20, 740, 93, 28)
@@ -235,6 +237,7 @@ class Ui_MainWindow(object):
         self.port_opened = False
 
     def display_data(self, data):
+        self.display_flag = True
         self.MainMonitorWindow.moveCursor(QtGui.QTextCursor.MoveOperation.End)
         if self.ShowWhiteChar.isChecked() == True:
             write_str = str()
@@ -261,6 +264,7 @@ class Ui_MainWindow(object):
             self.MainMonitorWindow.insertPlainText(data)
         
         self.MainMonitorWindow.moveCursor(QtGui.QTextCursor.MoveOperation.End)
+        self.display_flag = False
 
     #### String Sending ####
     def send_on_click(self):
@@ -333,3 +337,14 @@ class Ui_MainWindow(object):
             except (OSError, serial.SerialException):
                 pass
         return result
+
+    def send_from_window(self):
+        if self.port_opened:
+            if self.display_flag == False:
+                self.display_flag = True
+                string = self.MainMonitorWindow.toPlainText()
+                if len(string) != 0:
+                    self.MainMonitorWindow.textCursor().deletePreviousChar()
+                    self.UARTThread.send(string[-1])
+                    print(string[-1])
+                self.display_flag = False
