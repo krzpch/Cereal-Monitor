@@ -23,7 +23,7 @@ class Ui_MainWindow(object):
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1061, 860)
+        MainWindow.resize(1060, 900)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
@@ -165,19 +165,29 @@ class Ui_MainWindow(object):
 
         #### String Sending ####
         self.SendStringLabel = QtWidgets.QLabel(self.centralwidget)
-        self.SendStringLabel.setGeometry(20, 740, 651, 16)
+        self.SendStringLabel.setGeometry(20, 780, 651, 16)
         self.SendStringLabel.setObjectName("SendStringLabel")
         self.SendStringLabel.setText("Send String")
 
         self.SendStringLine = QtWidgets.QLineEdit(self.centralwidget)
-        self.SendStringLine.setGeometry(20, 760, 651, 31)
+        self.SendStringLine.setGeometry(20, 800, 651, 31)
         self.SendStringLine.setObjectName("SendStringLine")
         self.SendStringLine.returnPressed.connect(self.send_on_click)
 
         self.SendStringButton = QtWidgets.QPushButton(self.centralwidget, clicked = lambda: self.send_on_click())
-        self.SendStringButton.setGeometry(678, 760, 93, 31)
+        self.SendStringButton.setGeometry(680, 800, 93, 31)
         self.SendStringButton.setObjectName("SendStringButton")
         self.SendStringButton.setText("Send")
+
+        self.IncludeNBox = QtWidgets.QCheckBox(self.centralwidget)
+        self.IncludeNBox.setGeometry(690, 840, 651, 31)
+        self.IncludeNBox.setObjectName("IncludeNBox")
+        self.IncludeNBox.setText("\\n")
+
+        self.IncludeRBox = QtWidgets.QCheckBox(self.centralwidget)
+        self.IncludeRBox.setGeometry(730, 840, 651, 31)
+        self.IncludeRBox.setObjectName("IncludeRBox")
+        self.IncludeRBox.setText("\\r")
 
         MainWindow.setMenuBar(self.menubar)
 
