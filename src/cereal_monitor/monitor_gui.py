@@ -37,6 +37,11 @@ class Ui_MainWindow(object):
         self.ClearMainMonitorWindowButton.setObjectName("ClearMainMonitorWindowButton")
         self.ClearMainMonitorWindowButton.setText("Clear")
 
+        self.ShowWhiteChar = QtWidgets.QCheckBox(self.centralwidget)
+        self.ShowWhiteChar.setGeometry(650, 740, 120, 20)
+        self.ShowWhiteChar.setObjectName("ShowWhiteChar")
+        self.ShowWhiteChar.setText("Show White Characters")
+
         #### Connection Setting ####
         self.BaudrateInput = QtWidgets.QLineEdit(self.centralwidget)
         self.BaudrateInput.setGeometry(QtCore.QRect(810, 80, 191, 22))
@@ -231,7 +236,30 @@ class Ui_MainWindow(object):
 
     def display_data(self, data):
         self.MainMonitorWindow.moveCursor(QtGui.QTextCursor.MoveOperation.End)
-        self.MainMonitorWindow.insertPlainText(data)
+        if self.ShowWhiteChar.isChecked() == True:
+            write_str = str()
+            special_char_str = str()
+            for i in data:
+                # look for special characters
+                if i == '\n':
+                    write_str = write_str + '\\n'
+                    special_char_str = special_char_str + i
+                elif i == '\r':
+                    write_str = write_str + '\\r'
+                    special_char_str = special_char_str + i
+                else:
+                    if len(special_char_str) > 0:
+                        write_str = write_str + special_char_str
+                        special_char_str = str()
+                    write_str = write_str + i
+            # if special character was last add them to write str
+            if len(special_char_str) > 0:
+                write_str = write_str + special_char_str
+            self.MainMonitorWindow.insertPlainText(write_str)
+        
+        else:
+            self.MainMonitorWindow.insertPlainText(data)
+        
         self.MainMonitorWindow.moveCursor(QtGui.QTextCursor.MoveOperation.End)
 
     #### String Sending ####
