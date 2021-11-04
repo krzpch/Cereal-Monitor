@@ -27,6 +27,17 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
+        #### Main Window ####
+        self.MainMonitorWindow = QtWidgets.QTextEdit(self.centralwidget)
+        self.MainMonitorWindow.setGeometry(QtCore.QRect(20, 10, 751, 720))
+        self.MainMonitorWindow.setObjectName("MainMonitorWindow")
+
+        self.ClearMainMonitorWindowButton = QtWidgets.QPushButton(self.centralwidget, clicked = lambda: self.clear_main_window_on_click())
+        self.ClearMainMonitorWindowButton.setGeometry(20, 740, 93, 28)
+        self.ClearMainMonitorWindowButton.setObjectName("ClearMainMonitorWindowButton")
+        self.ClearMainMonitorWindowButton.setText("Clear")
+
+        #### Connection Setting ####
         self.BaudrateInput = QtWidgets.QLineEdit(self.centralwidget)
         self.BaudrateInput.setGeometry(QtCore.QRect(810, 80, 191, 22))
         self.BaudrateInput.setObjectName("BaudrateInput")
@@ -102,10 +113,6 @@ class Ui_MainWindow(object):
         self.BytesizeLabel.setGeometry(QtCore.QRect(810, 210, 111, 16))
         self.BytesizeLabel.setObjectName("BytesizeLabel")
         self.BytesizeLabel.setText("Byte Size")
-
-        self.MainMonitorWindow = QtWidgets.QTextEdit(self.centralwidget)
-        self.MainMonitorWindow.setGeometry(QtCore.QRect(20, 10, 751, 720))
-        self.MainMonitorWindow.setObjectName("MainMonitorWindow")
 
         #### open and close buttons ####
         self.OpenButton = QtWidgets.QPushButton(self.centralwidget, clicked = lambda: self.open_on_click())
@@ -198,6 +205,12 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+
+    #### Clear main window ####
+    def clear_main_window_on_click(self):
+        self.MainMonitorWindow.clear()
+
+
 
     #### open and clsoe the serial port for reading and writing ####
     def set_port_status(self):
