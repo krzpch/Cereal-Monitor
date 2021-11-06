@@ -20,6 +20,11 @@ import serial_monitor_presets
 
 class Ui_MainWindow(object):
     monitor_presets = serial_monitor_presets.MonitorPresets()
+<<<<<<< Updated upstream
+=======
+    shift_pressed = False
+    #capslock_pressed = False
+>>>>>>> Stashed changes
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -27,6 +32,27 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
+<<<<<<< Updated upstream
+=======
+        #### Main Window ####
+        self.MainMonitorWindow = QtWidgets.QTextEdit(self.centralwidget)
+        self.MainMonitorWindow.setGeometry(QtCore.QRect(20, 10, 751, 720))
+        self.MainMonitorWindow.setObjectName("MainMonitorWindow")
+        self.MainMonitorWindow.keyPressEvent = self.keyPressEvent
+        self.MainMonitorWindow.keyReleaseEvent = self.keyReleaseEvent
+
+        self.ClearMainMonitorWindowButton = QtWidgets.QPushButton(self.centralwidget, clicked = lambda: self.clear_main_window_on_click())
+        self.ClearMainMonitorWindowButton.setGeometry(20, 740, 93, 28)
+        self.ClearMainMonitorWindowButton.setObjectName("ClearMainMonitorWindowButton")
+        self.ClearMainMonitorWindowButton.setText("Clear")
+
+        self.ShowWhiteChar = QtWidgets.QCheckBox(self.centralwidget)
+        self.ShowWhiteChar.setGeometry(650, 740, 120, 20)
+        self.ShowWhiteChar.setObjectName("ShowWhiteChar")
+        self.ShowWhiteChar.setText("Show White Characters")
+
+        #### Connection Setting ####
+>>>>>>> Stashed changes
         self.BaudrateInput = QtWidgets.QLineEdit(self.centralwidget)
         self.BaudrateInput.setGeometry(QtCore.QRect(810, 80, 191, 22))
         self.BaudrateInput.setObjectName("BaudrateInput")
@@ -277,3 +303,41 @@ class Ui_MainWindow(object):
             except (OSError, serial.SerialException):
                 pass
         return result
+<<<<<<< Updated upstream
+=======
+
+    def keyPressEvent(self, event):
+        if self.port_opened:
+            if 0 <= event.key() and event.key() <= 0x10ffff:
+                if 0x41 <= event.key() and event.key() <= 0x5A:
+                    if self.shift_pressed:
+                        self.UARTThread.send(chr(event.key()))
+                    else:
+                        self.UARTThread.send(chr(event.key()+0x20))
+                else:
+                    self.UARTThread.send(chr(event.key()))
+            elif event.key() == 0x1000004: #enter
+                self.UARTThread.send(chr(0x0D))
+            elif event.key() == 0x1000001: #tab
+                self.UARTThread.send(chr(0x09))
+            elif event.key() == 0x1000003: #backspace
+                self.UARTThread.send(chr(0x7F))
+                self.MainMonitorWindow.textCursor().deletePreviousChar()
+            elif event.key() == 0x1000020: #shift
+                self.shift_pressed = True
+            #elif event.key() == 0x1000024: #caps lock
+            #    self.capslock_pressed = not self.capslock_pressed
+            #elif event.key() == 0x1000021: #ctrl
+            #    self.UARTThread.send(chr(0x09))
+            #elif event.key() == 0x1000023: #alt
+            #    self.UARTThread.send(chr(0x09))
+            else:
+                print(hex(event.key()))
+
+    def keyReleaseEvent(self, event):
+        if event.key() == 0x1000020: #shift
+            self.shift_pressed = False
+        elif event.key() == 0x1000003: #backspace
+            self.MainMonitorWindow.textCursor().deletePreviousChar()
+
+>>>>>>> Stashed changes
