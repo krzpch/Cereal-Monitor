@@ -20,20 +20,15 @@ import serial_monitor_presets
 
 class Ui_MainWindow(object):
     monitor_presets = serial_monitor_presets.MonitorPresets()
-<<<<<<< Updated upstream
-=======
     shift_pressed = False
     #capslock_pressed = False
->>>>>>> Stashed changes
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1061, 860)
+        MainWindow.resize(1060, 900)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
-<<<<<<< Updated upstream
-=======
         #### Main Window ####
         self.MainMonitorWindow = QtWidgets.QTextEdit(self.centralwidget)
         self.MainMonitorWindow.setGeometry(QtCore.QRect(20, 10, 751, 720))
@@ -52,7 +47,6 @@ class Ui_MainWindow(object):
         self.ShowWhiteChar.setText("Show White Characters")
 
         #### Connection Setting ####
->>>>>>> Stashed changes
         self.BaudrateInput = QtWidgets.QLineEdit(self.centralwidget)
         self.BaudrateInput.setGeometry(QtCore.QRect(810, 80, 191, 22))
         self.BaudrateInput.setObjectName("BaudrateInput")
@@ -129,10 +123,6 @@ class Ui_MainWindow(object):
         self.BytesizeLabel.setObjectName("BytesizeLabel")
         self.BytesizeLabel.setText("Byte Size")
 
-        self.MainMonitorWindow = QtWidgets.QTextEdit(self.centralwidget)
-        self.MainMonitorWindow.setGeometry(QtCore.QRect(20, 10, 751, 720))
-        self.MainMonitorWindow.setObjectName("MainMonitorWindow")
-
         #### open and close buttons ####
         self.OpenButton = QtWidgets.QPushButton(self.centralwidget, clicked = lambda: self.open_on_click())
         self.OpenButton.setGeometry(QtCore.QRect(810, 350, 191, 28))
@@ -191,19 +181,29 @@ class Ui_MainWindow(object):
 
         #### String Sending ####
         self.SendStringLabel = QtWidgets.QLabel(self.centralwidget)
-        self.SendStringLabel.setGeometry(20, 740, 651, 16)
+        self.SendStringLabel.setGeometry(20, 780, 651, 16)
         self.SendStringLabel.setObjectName("SendStringLabel")
         self.SendStringLabel.setText("Send String")
 
         self.SendStringLine = QtWidgets.QLineEdit(self.centralwidget)
-        self.SendStringLine.setGeometry(20, 760, 651, 31)
+        self.SendStringLine.setGeometry(20, 800, 651, 31)
         self.SendStringLine.setObjectName("SendStringLine")
         self.SendStringLine.returnPressed.connect(self.send_on_click)
 
         self.SendStringButton = QtWidgets.QPushButton(self.centralwidget, clicked = lambda: self.send_on_click())
-        self.SendStringButton.setGeometry(678, 760, 93, 31)
+        self.SendStringButton.setGeometry(680, 800, 93, 31)
         self.SendStringButton.setObjectName("SendStringButton")
         self.SendStringButton.setText("Send")
+
+        self.IncludeNBox = QtWidgets.QCheckBox(self.centralwidget)
+        self.IncludeNBox.setGeometry(690, 840, 651, 31)
+        self.IncludeNBox.setObjectName("IncludeNBox")
+        self.IncludeNBox.setText("\\n")
+
+        self.IncludeRBox = QtWidgets.QCheckBox(self.centralwidget)
+        self.IncludeRBox.setGeometry(730, 840, 651, 31)
+        self.IncludeRBox.setObjectName("IncludeRBox")
+        self.IncludeRBox.setText("\\r")
 
         MainWindow.setMenuBar(self.menubar)
 
@@ -214,6 +214,12 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+
+    #### Clear main window ####
+    def clear_main_window_on_click(self):
+        self.MainMonitorWindow.clear()
+
+
 
     #### open and clsoe the serial port for reading and writing ####
     def set_port_status(self):
@@ -233,14 +239,44 @@ class Ui_MainWindow(object):
         self.port_opened = False
 
     def display_data(self, data):
+        self.display_flag = True
         self.MainMonitorWindow.moveCursor(QtGui.QTextCursor.MoveOperation.End)
-        self.MainMonitorWindow.insertPlainText(data)
+        if self.ShowWhiteChar.isChecked() == True:
+            write_str = str()
+            special_char_str = str()
+            for i in data:
+                # look for special characters
+                if i == '\n':
+                    write_str = write_str + '\\n'
+                    special_char_str = special_char_str + i
+                elif i == '\r':
+                    write_str = write_str + '\\r'
+                    special_char_str = special_char_str + i
+                else:
+                    if len(special_char_str) > 0:
+                        write_str = write_str + special_char_str
+                        special_char_str = str()
+                    write_str = write_str + i
+            # if special character was last add them to write str
+            if len(special_char_str) > 0:
+                write_str = write_str + special_char_str
+            self.MainMonitorWindow.insertPlainText(write_str)
+        
+        else:
+            self.MainMonitorWindow.insertPlainText(data)
+        
         self.MainMonitorWindow.moveCursor(QtGui.QTextCursor.MoveOperation.End)
+        self.display_flag = False
 
     #### String Sending ####
     def send_on_click(self):
         if self.port_opened:
-            self.UARTThread.send(self.SendStringLine.text())
+            send_text = self.SendStringLine.text()
+            if self.IncludeNBox.isChecked() == True:
+                send_text = send_text + '\n'
+            if self.IncludeRBox.isChecked() == True:
+                send_text = send_text + '\r'
+            self.UARTThread.send(send_text)
 
     #### preset load, save and delete button ####
     def presetload_on_click(self):
@@ -303,8 +339,6 @@ class Ui_MainWindow(object):
             except (OSError, serial.SerialException):
                 pass
         return result
-<<<<<<< Updated upstream
-=======
 
     def keyPressEvent(self, event):
         if self.port_opened:
@@ -340,4 +374,3 @@ class Ui_MainWindow(object):
         elif event.key() == 0x1000003: #backspace
             self.MainMonitorWindow.textCursor().deletePreviousChar()
 
->>>>>>> Stashed changes
