@@ -37,7 +37,6 @@ class UARTPort(QThread):
 
     def send(self, data):
         if self.port_opened:
-            print("Sending:",data)
             self.serial_port.write(str.encode(data))
             self.serial_port.flush()
 
