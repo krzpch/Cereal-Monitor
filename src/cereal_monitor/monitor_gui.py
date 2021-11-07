@@ -9,7 +9,6 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QThread as thr, endl
 
 import sys
 import glob
@@ -22,7 +21,6 @@ user_params_1 = "background-color: #E7E7E7; font: bold 14px"
 user_font_1 = "font: bold 14px"
 class Ui_MainWindow(object):
     monitor_presets = serial_monitor_presets.MonitorPresets()
-    display_flag = False
     shift_pressed = False
     #capslock_pressed = False
 
@@ -281,34 +279,28 @@ class Ui_MainWindow(object):
             print("Port aleady closed")
 
     def display_data(self, data):
-        self.display_flag = True
         self.MainMonitorWindow.moveCursor(QtGui.QTextCursor.MoveOperation.End)
-        if self.ShowWhiteChar.isChecked() == True:
-            write_str = str()
-            special_char_str = str()
-            for i in data:
-                # look for special characters
-                if i == '\n':
-                    write_str = write_str + '\\n'
-                    special_char_str = special_char_str + i
-                elif i == '\r':
-                    write_str = write_str + '\\r'
-                    special_char_str = special_char_str + i
-                else:
-                    if len(special_char_str) > 0:
-                        write_str = write_str + special_char_str
-                        special_char_str = str()
-                    write_str = write_str + i
-            # if special character was last add them to write str
-            if len(special_char_str) > 0:
-                write_str = write_str + special_char_str
-            self.MainMonitorWindow.insertPlainText(write_str)
-        
-        else:
-            self.MainMonitorWindow.insertPlainText(data)
-        
+
+        for i in data:
+            if i == '\n':
+                if self.ShowWhiteChar.isChecked() == True:
+                   self.MainMonitorWindow.insertPlainText('\\n')
+                self.MainMonitorWindow.insertPlainText(i)
+            elif i == '\r':
+                if self.ShowWhiteChar.isChecked() == True:
+                    self.MainMonitorWindow.insertPlainText('\\r')
+                self.MainMonitorWindow.insertPlainText(i)
+            elif i == chr(0x7F):
+                if self.ShowWhiteChar.isChecked() == True:
+                    if len(self.MainMonitorWindow.toPlainText()) > 0:
+                        if self.MainMonitorWindow.toPlainText()[-1] == '\n' or self.MainMonitorWindow.toPlainText()[-1] == '\r':
+                            self.MainMonitorWindow.textCursor().deletePreviousChar()
+                            self.MainMonitorWindow.textCursor().deletePreviousChar()
+                self.MainMonitorWindow.textCursor().deletePreviousChar()
+            else:
+                self.MainMonitorWindow.insertPlainText(i)
+                
         self.MainMonitorWindow.moveCursor(QtGui.QTextCursor.MoveOperation.End)
-        self.display_flag = False
 
     #### String Sending ####
     def send_on_click(self):
@@ -398,7 +390,6 @@ class Ui_MainWindow(object):
                 self.UARTThread.send(chr(0x09))
             elif event.key() == 0x1000003: #backspace
                 self.UARTThread.send(chr(0x7F))
-                self.MainMonitorWindow.textCursor().deletePreviousChar()
             elif event.key() == 0x1000020: #shift
                 self.shift_pressed = True
             #elif event.key() == 0x1000024: #caps lock
@@ -413,6 +404,5 @@ class Ui_MainWindow(object):
     def keyReleaseEvent(self, event):
         if event.key() == 0x1000020: #shift
             self.shift_pressed = False
-        elif event.key() == 0x1000003: #backspace
-            self.MainMonitorWindow.textCursor().deletePreviousChar()
+
 
