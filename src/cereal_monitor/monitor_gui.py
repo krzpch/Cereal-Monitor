@@ -239,16 +239,6 @@ class Ui_MainWindow(object):
         self.IncludeRBox.setText("\\r")
         self.IncludeRBox.setStyleSheet(user_font_1)
 
-        self.IncludeNBox = QtWidgets.QCheckBox(self.centralwidget)
-        self.IncludeNBox.setGeometry(690, 840, 651, 31)
-        self.IncludeNBox.setObjectName("IncludeNBox")
-        self.IncludeNBox.setText("\\n")
-
-        self.IncludeRBox = QtWidgets.QCheckBox(self.centralwidget)
-        self.IncludeRBox.setGeometry(730, 840, 651, 31)
-        self.IncludeRBox.setObjectName("IncludeRBox")
-        self.IncludeRBox.setText("\\r")
-
         MainWindow.setMenuBar(self.menubar)
 
         self.retranslateUi(MainWindow)
