@@ -22,7 +22,7 @@ user_params_1 = "background-color: #E7E7E7; font: bold 14px"
 user_font_1 = "font: bold 14px"
 class Ui_MainWindow(object):
     monitor_presets = serial_monitor_presets.MonitorPresets()
-    display_flag = True
+    display_flag = False
     shift_pressed = False
     #capslock_pressed = False
 
