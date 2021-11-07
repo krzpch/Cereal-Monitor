@@ -23,8 +23,6 @@ user_font_1 = "font: bold 14px"
 class Ui_MainWindow(object):
     monitor_presets = serial_monitor_presets.MonitorPresets()
     display_flag = False
-    shift_pressed = False
-    #capslock_pressed = False
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -37,10 +35,8 @@ class Ui_MainWindow(object):
         self.MainMonitorWindow = QtWidgets.QTextEdit(self.centralwidget)
         self.MainMonitorWindow.setGeometry(QtCore.QRect(20, 10, 751, 720))
         self.MainMonitorWindow.setObjectName("MainMonitorWindow")
-        #self.MainMonitorWindow.textChanged.connect(self.send_from_window)
+        self.MainMonitorWindow.textChanged.connect(self.send_from_window)
         self.MainMonitorWindow.setStyleSheet(user_params_1)
-        self.MainMonitorWindow.keyPressEvent = self.keyPressEvent
-        self.MainMonitorWindow.keyReleaseEvent = self.keyReleaseEvent
 
         self.ClearMainMonitorWindowButton = QtWidgets.QPushButton(self.centralwidget, clicked = lambda: self.clear_main_window_on_click())
         self.ClearMainMonitorWindowButton.setGeometry(20, 740, 93, 28)
@@ -240,16 +236,6 @@ class Ui_MainWindow(object):
         self.IncludeRBox.setText("\\r")
         self.IncludeRBox.setStyleSheet(user_font_1)
 
-        self.IncludeNBox = QtWidgets.QCheckBox(self.centralwidget)
-        self.IncludeNBox.setGeometry(690, 840, 651, 31)
-        self.IncludeNBox.setObjectName("IncludeNBox")
-        self.IncludeNBox.setText("\\n")
-
-        self.IncludeRBox = QtWidgets.QCheckBox(self.centralwidget)
-        self.IncludeRBox.setGeometry(730, 840, 651, 31)
-        self.IncludeRBox.setObjectName("IncludeRBox")
-        self.IncludeRBox.setText("\\r")
-
         MainWindow.setMenuBar(self.menubar)
 
         self.retranslateUi(MainWindow)
@@ -393,37 +379,13 @@ class Ui_MainWindow(object):
                 pass
         return result
 
-    def keyPressEvent(self, event):
+    def send_from_window(self):
         if self.port_opened:
-            if 0 <= event.key() and event.key() <= 0x10ffff:
-                if 0x41 <= event.key() and event.key() <= 0x5A:
-                    if self.shift_pressed:
-                        self.UARTThread.send(chr(event.key()))
-                    else:
-                        self.UARTThread.send(chr(event.key()+0x20))
-                else:
-                    self.UARTThread.send(chr(event.key()))
-            elif event.key() == 0x1000004: #enter
-                self.UARTThread.send(chr(0x0D))
-            elif event.key() == 0x1000001: #tab
-                self.UARTThread.send(chr(0x09))
-            elif event.key() == 0x1000003: #backspace
-                self.UARTThread.send(chr(0x7F))
-                self.MainMonitorWindow.textCursor().deletePreviousChar()
-            elif event.key() == 0x1000020: #shift
-                self.shift_pressed = True
-            #elif event.key() == 0x1000024: #caps lock
-            #    self.capslock_pressed = not self.capslock_pressed
-            #elif event.key() == 0x1000021: #ctrl
-            #    self.UARTThread.send(chr(0x09))
-            #elif event.key() == 0x1000023: #alt
-            #    self.UARTThread.send(chr(0x09))
-            else:
-                print(hex(event.key()))
-
-    def keyReleaseEvent(self, event):
-        if event.key() == 0x1000020: #shift
-            self.shift_pressed = False
-        elif event.key() == 0x1000003: #backspace
-            self.MainMonitorWindow.textCursor().deletePreviousChar()
-
+            if self.display_flag == False:
+                self.display_flag = True
+                string = self.MainMonitorWindow.toPlainText()
+                if len(string) != 0:
+                    self.MainMonitorWindow.textCursor().deletePreviousChar()
+                    self.UARTThread.send(string[-1])
+                    print(string[-1])
+                self.display_flag = False
