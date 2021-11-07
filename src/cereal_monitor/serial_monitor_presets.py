@@ -1,13 +1,12 @@
 import json
 
-from PyQt5.sip import delete
-
 class MonitorPresets():
+    saved_presets_path = '.\\saved_presets.json'
     data = {}
 
     def __init__(self):
         try:
-            with open('saved_presets.json', 'r') as infile:
+            with open(self.saved_presets_path, 'r') as infile:
                 self.data = json.load(infile)
         except FileNotFoundError:
             self.data['presets'] = []
@@ -27,7 +26,7 @@ class MonitorPresets():
 
         self.data['presets'].append(newdata)
 
-        with open('saved_presets.json', 'w') as outfile:
+        with open(self.saved_presets_path, 'w') as outfile:
             json.dump(self.data, outfile, indent=4)
 
     def load_preset(self, name):
@@ -40,6 +39,6 @@ class MonitorPresets():
         for preset in self.data['presets']:
             if name == preset['name']:
                 self.data['presets'].pop(i)
-                with open('saved_presets.json', 'w') as outfile:
+                with open(self.saved_presets_path, 'w') as outfile:
                     json.dump(self.data, outfile, indent=4)
             i = i + 1
