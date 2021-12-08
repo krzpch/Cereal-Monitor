@@ -11,7 +11,24 @@ Cereal-Monitor
     This project is a gui based serial monitor that enables sending and receiving data through serial ports.
    
 
-To use this program you nned to start script named monitor_main.py. It automatically check all avaliable ports and shows them in port box. After this you can set desired settings and then you press "Connect/Change" button. You can send data by writing it to "Send String" box and presing "Send". The mesage is send as string. Second option is using keyboard in main window. Using this method sends every character independently. Moreover, you can check "\\n' or "\\r" checkbox to add this white characters to the end of string. "Show Hex Format" checkbox allows you to convert all received data to hexadecimal values. This mode allows you to read data whitch cannot be represented in UTF-8 enoding or white characters. 
+To use this program you nned to start script named monitor_main.py. It automatically check all avaliable ports and shows them in port box. After this you can set desired settings and then you press "Connect/Change" button. You can send data by writing it to "Send String" box and presing "Send". The mesage is send as string. Second option is using keyboard in main window. Using this method sends every character independently. Moreover, you can check "\\n' or "\\r" checkbox to add this white characters to the end of string. 
+
+.. image:: https://github.com/krzpch/Cereal-Monitor/blob/main/screenshots/screen2.png
+  :width: 800
+  :alt: Alternative text
+
+"Show White Characters" allows you to see "\\n" and "\\r" on main widnow. 
+
+.. image:: https://github.com/krzpch/Cereal-Monitor/blob/main/screenshots/screen0.png
+  :width: 800
+  :alt: Alternative text
+
+
+"Show Hex Format" checkbox allows you to convert all received data to hexadecimal values. This mode allows you to read data whitch cannot be represented in UTF-8 enoding or white characters. 
+
+.. image:: https://github.com/krzpch/Cereal-Monitor/blob/main/screenshots/screen1.png
+  :width: 800
+  :alt: Alternative text
 
 Additionally you can save your active preset and load it in next use of this program. 
 
@@ -23,9 +40,7 @@ To correctly use this you must:
 To apply saved prestes you need to select desired preset form list and click "Load" button. If desired port is avaliable, the preset will be loaded to your current settings.
 
 
-.. image:: https://github.com/krzpch/Cereal-Monitor/blob/main/Screenshot.png
-  :width: 800
-  :alt: Alternative text
+
 
 ==============
 Documentation
