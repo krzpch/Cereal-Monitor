@@ -51,6 +51,12 @@ class Ui_MainWindow(object):
         self.ShowWhiteChar.setText("Show White Characters")
         self.ShowWhiteChar.setStyleSheet(user_font_1)
 
+        self.ShowHexFormat = QtWidgets.QCheckBox(self.centralwidget)
+        self.ShowHexFormat.setGeometry(590, 760, 180, 20)
+        self.ShowHexFormat.setObjectName("ShowHexFormat")
+        self.ShowHexFormat.setText("Show Hex format")
+        self.ShowHexFormat.setStyleSheet(user_font_1)
+
         #### Connection Setting ####
         self.BaudrateInput = QtWidgets.QLineEdit(self.centralwidget)
         self.BaudrateInput.setGeometry(QtCore.QRect(810, 80, 191, 22))
@@ -279,28 +285,36 @@ class Ui_MainWindow(object):
             print("Port aleady closed")
 
     def display_data(self, data):
-        self.MainMonitorWindow.moveCursor(QtGui.QTextCursor.MoveOperation.End)
+        if (len(data) > 0):
+            self.MainMonitorWindow.moveCursor(QtGui.QTextCursor.MoveOperation.End)
+            if (self.ShowHexFormat.isChecked() == False):
+                for i in str(data,encoding='utf',errors='replace'):
+                    if i == '\n':
+                        if self.ShowWhiteChar.isChecked() == True:
+                           self.MainMonitorWindow.insertPlainText('\\n')
+                        self.MainMonitorWindow.insertPlainText(i)
+                    elif i == '\r':
+                        if self.ShowWhiteChar.isChecked() == True:
+                            self.MainMonitorWindow.insertPlainText('\\r')
+                        self.MainMonitorWindow.insertPlainText(i)
+                    elif i == chr(0x7F):
+                        if self.ShowWhiteChar.isChecked() == True:
+                            if len(self.MainMonitorWindow.toPlainText()) > 0:
+                                if self.MainMonitorWindow.toPlainText()[-1] == '\n' or self.MainMonitorWindow.toPlainText()[-1] == '\r':
+                                    self.MainMonitorWindow.textCursor().deletePreviousChar()
+                                    self.MainMonitorWindow.textCursor().deletePreviousChar()
+                        self.MainMonitorWindow.textCursor().deletePreviousChar()
+                    else:
+                        self.MainMonitorWindow.insertPlainText(i)
 
-        for i in data:
-            if i == '\n':
-                if self.ShowWhiteChar.isChecked() == True:
-                   self.MainMonitorWindow.insertPlainText('\\n')
-                self.MainMonitorWindow.insertPlainText(i)
-            elif i == '\r':
-                if self.ShowWhiteChar.isChecked() == True:
-                    self.MainMonitorWindow.insertPlainText('\\r')
-                self.MainMonitorWindow.insertPlainText(i)
-            elif i == chr(0x7F):
-                if self.ShowWhiteChar.isChecked() == True:
-                    if len(self.MainMonitorWindow.toPlainText()) > 0:
-                        if self.MainMonitorWindow.toPlainText()[-1] == '\n' or self.MainMonitorWindow.toPlainText()[-1] == '\r':
-                            self.MainMonitorWindow.textCursor().deletePreviousChar()
-                            self.MainMonitorWindow.textCursor().deletePreviousChar()
-                self.MainMonitorWindow.textCursor().deletePreviousChar()
             else:
-                self.MainMonitorWindow.insertPlainText(i)
-                
-        self.MainMonitorWindow.moveCursor(QtGui.QTextCursor.MoveOperation.End)
+                for i in data:
+                    self.MainMonitorWindow.insertPlainText(f"{i:#0{4}x}")
+                    self.MainMonitorWindow.insertPlainText(' ')
+
+            self.MainMonitorWindow.moveCursor(QtGui.QTextCursor.MoveOperation.End)
+                #raise NotImplementedError
+        
 
     #### String Sending ####
     def send_on_click(self):

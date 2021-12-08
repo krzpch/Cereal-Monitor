@@ -28,9 +28,12 @@ class UARTPort(QThread):
 
     def run(self):
         while self.port_opened:
-            temp_str = str(self.serial_port.read_all(),encoding='ascii')
-            self.recv.emit(temp_str)
-            self.str = temp_str
+            temp_data = self.serial_port.read_all()
+            self.recv.emit(temp_data)
+            self.data = temp_data
+            #temp_str = str(self.serial_port.read_all(),encoding='utf',errors='replace')
+            #self.recv.emit(temp_str)
+            #self.str = temp_str
 
     def recv_string(self):
         return self.str
