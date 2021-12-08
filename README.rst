@@ -20,7 +20,7 @@ To correctly use this you must:
  - write the name of this preset
  - press "Save" button
 
-To apply saved prestes you s
+To apply saved prestes you need to select desired preset form list and click "Load" button. If desired port is avaliable, the preset will be loaded to your current settings.
 
 
 .. image:: https://github.com/krzpch/Cereal-Monitor/blob/main/Screenshot.png
