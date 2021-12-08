@@ -11,8 +11,16 @@ Cereal-Monitor
     This project is a gui based serial monitor that enables sending and receiving data through serial ports.
    
 
-A longer description of your project goes here...
+To use this program you nned to start script named monitor_main.py. It automatically check all avaliable ports and shows them in port box. After this you can set desired settings and then you press "Connect/Change" button. You can send data by writing it to "Send String" box and presing "Send". The mesage is send as string. Second option is using keyboard in main window. Using this method sends every character independently. Moreover, you can check "\\n' or "\\r" checkbox to add this white characters to the end of string. "Show Hex Format" checkbox allows you to convert all received data to hexadecimal values. This mode allows you to read data whitch cannot be represented in UTF-8 enoding or white characters. 
 
+Additionally you can save your active preset and load it in next use of this program. 
+
+To correctly use this you must:
+ - set desired port and other settings
+ - write the name of this preset
+ - press "Save" button
+
+To apply saved prestes you s
 
 
 .. image:: https://github.com/krzpch/Cereal-Monitor/blob/main/Screenshot.png
@@ -142,6 +150,8 @@ pySerial  : https://pypi.org/project/pyserial/
 ==============
 Note
 ==============
+
+TESTED ONLY ON WINDOWS!
 
 This project has been set up using PyScaffold 4.1.1. For details and usage
 information on PyScaffold see https://pyscaffold.org/.
